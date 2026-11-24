@@ -620,12 +620,9 @@ img, svg, iframe { max-width: 100%; }
 }
 
 /* =========================================
-   REFUERZO DE ICONOS PHOSPHOR Y BOTONES
+   MANTENER ICONOS ORIGINALES DE PHOSPHOR
    ========================================= */
 i[class^="ph"], i[class*=" ph-"] {
     line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    vertical-align: middle;
 }

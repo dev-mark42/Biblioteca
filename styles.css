@@ -618,3 +618,14 @@ img, svg, iframe { max-width: 100%; }
 
     .toast { min-width: 0; width: 100%; padding: 10px 14px; }
 }
+
+/* =========================================
+   REFUERZO DE ICONOS PHOSPHOR Y BOTONES
+   ========================================= */
+i[class^="ph"], i[class*=" ph-"] {
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}

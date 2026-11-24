@@ -585,7 +585,7 @@ function toggleSave(id) {
     }
 
     localStorage.setItem('bt_saved', JSON.stringify(state.saved));
-    dom.statSaved.textContent = state.saved.length;
+    if (dom.statSaved) dom.statSaved.textContent = state.saved.length;
 
     if (state.currentBook && state.currentBook.id === id) {
         const isSaved = state.saved.includes(id);

@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#09090b">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Booktopia">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3145/3145765.png">
     <title>Booktopia · Tu Biblioteca Digital</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
@@ -373,15 +376,16 @@
         <button class="fab-suggest" id="fabSuggest" title="Sugerir un libro"><i class="ph ph-chat-teardrop-text"></i></button>
         <div id="toastContainer" class="toast-container"></div>
     </div>
-    <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('./sw.js').catch((err) => {
-                        console.warn('SW no registrado:', err);
-                    });
-                });
-            }
-        </script>
+
     <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((reg) => console.log('PWA Service Worker activo:', reg.scope))
+                    .catch((err) => console.warn('Error registrando SW:', err));
+            });
+        }
+    </script>
 </body>
 </html>

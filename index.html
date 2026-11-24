@@ -12,7 +12,27 @@
     <title>Booktopia · Tu Biblioteca Digital</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .icon-svg {
+            width: 1.15em;
+            height: 1.15em;
+            display: inline-block;
+            vertical-align: -0.18em;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+        .icon-svg-fill {
+            fill: currentColor;
+            stroke: none;
+        }
+        .ph-spin .icon-svg {
+            animation: spin 1s linear infinite;
+        }
+    </style>
 </head>
 <body>
 
@@ -379,7 +399,78 @@
 
     <script src="app.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
+        (function() {
+            const ICONS = {
+                'ph-house': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+                'ph-books': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h3v16H6a2 2 0 0 1-2-2z"/><path d="M9 19V5a2 2 0 0 1 2-2h3v16h-3a2 2 0 0 1-2-2z"/><path d="M14 19l3-14 3 14"/></svg>',
+                'ph-notebook': '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M3 7h2"/><path d="M3 12h2"/><path d="M3 17h2"/></svg>',
+                'ph-bookmarks': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v14l-4.5-3L8 18V4z"/><path d="M17 7h1a2 2 0 0 1 2 2v13l-4.5-3L11 22v-1"/></svg>',
+                'ph-chart-pie-slice': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+                'ph-user': '<svg class="icon-svg icon-svg-fill" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6v1H4v-1z"/></svg>',
+                'ph-user-circle': '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 19.2c1.4-2 3.3-3.2 5.5-3.2s4.1 1.2 5.5 3.2"/></svg>',
+                'ph-lock-key': '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1"/></svg>',
+                'ph-sign-in': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>',
+                'ph-sign-out': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
+                'ph-moon': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+                'ph-sun': '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+                'ph-arrow-right': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>',
+                'ph-sparkle': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>',
+                'ph-magnifying-glass': '<svg class="icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>',
+                'ph-plus': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>',
+                'ph-floppy-disk': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>',
+                'ph-activity': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+                'ph-chat-teardrop-text': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M8 10h8"/><path d="M8 14h5"/></svg>',
+                'ph-image': '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>',
+                'ph-upload': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>',
+                'ph-list-dashes': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/></svg>',
+                'ph-chat-centered-text': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8"/><path d="M8 13h6"/></svg>',
+                'ph-robot': '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/><path d="M9 16.5h6"/></svg>',
+                'ph-x': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+                'ph-paper-plane-right': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>',
+                'ph-star': '<svg class="icon-svg icon-svg-fill" viewBox="0 0 24 24"><path d="m12 2.5 2.9 6.1 6.7.9-4.9 4.7 1.2 6.6L12 17.7l-5.9 3.1 1.2-6.6-4.9-4.7 6.7-.9z"/></svg>',
+                'ph-star-half': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="m12 2.5 2.9 6.1 6.7.9-4.9 4.7 1.2 6.6L12 17.7l-5.9 3.1 1.2-6.6-4.9-4.7 6.7-.9z"/></svg>',
+                'ph-pencil-simple': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>',
+                'ph-calendar': '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>',
+                'ph-file-text': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+                'ph-translate': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>',
+                'ph-book-open': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+                'ph-download-simple': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>',
+                'ph-bookmark': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+                'ph-bookmark-simple': '<svg class="icon-svg icon-svg-fill" viewBox="0 0 24 24"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+                'ph-spinner-gap': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>',
+                'ph-envelope': '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+                'ph-chat-text': '<svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8"/><path d="M8 13h6"/></svg>',
+                'ph-tree-evergreen': '<svg class="icon-svg icon-svg-fill" viewBox="0 0 24 24"><path d="M12 2 6 10h3l-4 7h6v5h2v-5h6l-4-7h3z"/></svg>',
+                'ph-check-circle': '<svg class="icon-svg icon-svg-fill" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm-1.2 14.3-3.5-3.5 1.4-1.4 2.1 2.1 4.6-4.6 1.4 1.4z"/></svg>',
+                'ph-warning-circle': '<svg class="icon-svg icon-svg-fill" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg>',
+                'ph-info': '<svg class="icon-svg icon-svg-fill" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-6h2zm0-8h-2V7h2z"/></svg>'
+            };
+
+            function renderIcons(root) {
+                const els = (root || document).querySelectorAll('i[class*="ph-"]');
+                els.forEach((el) => {
+                    if (el.dataset.iconRendered === '1') return;
+                    const cls = Array.from(el.classList).find((c) => ICONS[c]);
+                    if (cls) {
+                        el.innerHTML = ICONS[cls];
+                        el.dataset.iconRendered = '1';
+                    }
+                });
+            }
+
+            renderIcons(document);
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((m) => {
+                    m.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) renderIcons(node);
+                    });
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        })();
+    </script>
+    <script>
+        if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
                     .then((reg) => console.log('PWA Service Worker activo:', reg.scope))

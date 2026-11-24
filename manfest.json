@@ -1,16 +1,10 @@
 {
-  "name": "Booktopia",
-  "short_name": "Booktopia",
-  "start_url": "./index.html",
+  "name": "Biblioteca",
+  "short_name": "Biblioteca",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#09090b",
-  "theme_color": "#3b82f6",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3145/3145765.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary"
 }

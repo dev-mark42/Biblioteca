@@ -1,0 +1,26 @@
+/* Mobile First Adjustments */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--card-bg);
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .nav-links.active { display: flex; }
+
+    .hamburger { display: flex; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; }
+    .hamburger span { width: 25px; height: 3px; background: var(--text-primary); }
+
+    .search-form { flex-direction: column; }
+    .books-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+
+@media (min-width: 769px) {
+    .hamburger { display: none; }
+    .nav-links { display: flex !important; flex-direction: row; position: static; box-shadow: none; background: transparent; padding: 0; }
+}

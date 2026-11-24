@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#09090b">
+    <title>Booktopia · Tu Biblioteca Digital</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <!-- FONDO ANIMADO AUTOMÁTICO -->
+    <div class="bg-animated">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="gradient-overlay"></div>
+    </div>
+
+    <!-- ================= LOGIN SCREEN ================= -->
+    <div id="loginScreen" class="login-screen hidden">
+        <div class="login-container">
+
+            <!-- ANIMACIÓN 3D CON TEXTO FLOTANTE -->
+            <div class="book-animation-container">
+                <div class="book-3d">
+                    <div class="book-cover-front">
+                        <div class="book-spine"></div>
+                        <i class="ph-fill ph-tree-evergreen book-icon"></i>
+                        <div class="book-text-wrapper">
+                            <span class="book-title-3d" id="bookTyping"></span>
+                        </div>
+                    </div>
+                    <div class="book-page page-1"></div>
+                    <div class="book-page page-2"></div>
+                    <div class="book-page page-3"></div>
+                    <div class="book-cover-back"></div>
+                </div>
+            </div>
+
+            <!-- FORMULARIO LOGIN -->
+            <div class="login-card glass-panel">
+                <div class="login-header">
+                    <div class="logo-container" id="loginLogoBtn" title="Ver info de la empresa">
+                        <svg viewBox="0 0 100 100" class="svg-logo">
+                            <path d="M50,20 L50,80 M20,20 L20,80 M80,20 L80,80" stroke="currentColor" stroke-width="4" fill="none"/>
+                            <path d="M20,80 Q50,60 80,80" stroke="currentColor" stroke-width="4" fill="none"/>
+                            <path d="M30,60 Q50,40 70,60" stroke="currentColor" stroke-width="4" fill="none"/>
+                            <circle cx="50" cy="40" r="15" fill="currentColor" opacity="0.2"/>
+                            <path d="M50,20 Q30,40 50,60 Q70,40 50,20" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h1>Booktopia</h1>
+                    <p class="typing-text" id="loginTyping"></p>
+                </div>
+
+                <form id="loginForm" novalidate>
+                    <div class="input-group">
+                        <i class="ph ph-user"></i>
+                        <input type="text" id="loginUser" placeholder="Usuario (admin / user)" required>
+                        <div class="error-msg">Requerido</div>
+                    </div>
+                    <div class="input-group">
+                        <i class="ph ph-lock-key"></i>
+                        <input type="password" id="loginPass" placeholder="Contraseña (admin123 / user123)" required>
+                        <div class="error-msg">Requerido</div>
+                    </div>
+
+                    <div class="login-options">
+                        <label class="remember"><input type="checkbox" id="rememberMe"> Recordarme</label>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-block" id="loginBtn">
+                        <span>Iniciar Sesión</span> <i class="ph ph-sign-in"></i>
+                    </button>
+                </form>
+
+                <div class="divider"><span>o</span></div>
+
+                <button id="guestBtn" class="btn-ghost btn-block">
+                    <i class="ph ph-user-circle"></i> Entrar como Invitado
+                </button>
+                <p class="login-hint">Prueba con: <b>admin / admin123</b> o <b>user / user123</b></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= APP SHELL ================= -->
+    <div id="app" class="app hidden">
+
+        <header class="topbar glass-panel">
+            <div class="topbar-left">
+                <div class="logo-wrapper" id="appLogoBtn">
+                    <svg viewBox="0 0 100 100" class="svg-logo-small">
+                        <path d="M50,20 L50,80 M20,20 L20,80 M80,20 L80,80" stroke="currentColor" stroke-width="4" fill="none"/>
+                        <path d="M20,80 Q50,60 80,80" stroke="currentColor" stroke-width="4" fill="none"/>
+                        <path d="M30,60 Q50,40 70,60" stroke="currentColor" stroke-width="4" fill="none"/>
+                        <circle cx="50" cy="40" r="15" fill="currentColor" opacity="0.2"/>
+                        <path d="M50,20 Q30,40 50,60 Q70,40 50,20" fill="currentColor"/>
+                    </svg>
+                    <span class="logo-text">Booktopia</span>
+                </div>
+            </div>
+
+            <nav class="navbar" id="mainNav">
+                <button class="nav-btn active" data-screen="home"><i class="ph ph-house"></i> Inicio</button>
+                <button class="nav-btn" data-screen="catalog"><i class="ph ph-books"></i> Catálogo</button>
+                <button class="nav-btn" data-screen="notebook"><i class="ph ph-notebook"></i> Mi Cuaderno</button>
+                <button class="nav-btn" data-screen="library"><i class="ph ph-bookmarks"></i> Biblioteca</button>
+                <button class="nav-btn admin-only hidden" data-screen="admin"><i class="ph ph-chart-pie-slice"></i> Dashboard</button>
+            </nav>
+
+            <div class="topbar-right">
+                <div class="user-badge glass-panel">
+                    <i class="ph-fill ph-user"></i>
+                    <span id="userName">Invitado</span>
+                    <span class="role-tag" id="userRole">guest</span>
+                </div>
+                <button class="icon-btn" id="themeToggle"><i class="ph ph-moon"></i></button>
+                <button class="icon-btn" id="logoutBtn"><i class="ph ph-sign-out"></i></button>
+            </div>
+        </header>
+
+        <main id="screenContainer" class="screen-container">
+
+            <!-- 1. HOME -->
+            <section class="screen active" id="screen-home">
+                <div class="home-layout">
+                    <div class="hero-panel glass-panel">
+                        <div class="carousel-track" id="carouselTrack">
+                            <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1200&auto=format&fit=crop');"><div class="overlay"></div></div>
+                            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1200&auto=format&fit=crop');"><div class="overlay"></div></div>
+                            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=1200&auto=format&fit=crop');"><div class="overlay"></div></div>
+                        </div>
+                        <div class="hero-content">
+                            <span class="hero-tag">Descubre tu próxima aventura</span>
+                            <div class="typewriter-container">
+                                <h1 class="typewriter" id="heroTyping"></h1>
+                            </div>
+                            <p class="fade-in-delayed">Explora nuestra colección premium de obras literarias, científicas y de investigación.</p>
+                            <button class="btn-primary pulse-btn" data-screen="catalog">Comenzar a Leer <i class="ph ph-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="recent-panel glass-panel">
+                        <div class="panel-header">
+                            <h2>Destacados</h2>
+                            <i class="ph ph-sparkle text-gold"></i>
+                        </div>
+                        <div class="books-grid-slim" id="featuredGrid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. CATÁLOGO -->
+            <section class="screen" id="screen-catalog">
+                <div class="screen-header">
+                    <h2>Catálogo General</h2>
+                    <div class="search-bar glass-panel">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="search" id="searchInput" placeholder="Buscar por título o autor..." autocomplete="off">
+                    </div>
+                </div>
+                <div class="chip-row" id="categoryChips">
+                    <button class="chip active" data-cat="all">Todas</button>
+                    <button class="chip" data-cat="novela">Novela</button>
+                    <button class="chip" data-cat="ciencia">Ciencia</button>
+                    <button class="chip" data-cat="poesia">Poesía</button>
+                    <button class="chip" data-cat="historia">Historia</button>
+                    <button class="chip" data-cat="filosofia">Filosofía</button>
+                </div>
+                <div id="booksGrid" class="books-grid"></div>
+            </section>
+
+            <!-- 3. NOTEBOOK (ESCRIBIR LIBRO) -->
+            <section class="screen" id="screen-notebook">
+                <div class="screen-header">
+                    <h2>Mi Cuaderno de Autor</h2>
+                    <p class="status-text">Escribe tus propias historias o notas de lectura.</p>
+                </div>
+                <div class="notebook-layout">
+                    <div class="notebook-sidebar glass-panel">
+                        <button class="btn-primary btn-block" id="newNoteBtn"><i class="ph ph-plus"></i> Nueva Nota</button>
+                        <div class="notes-list" id="notesList"></div>
+                    </div>
+                    <div class="notebook-editor glass-panel">
+                        <input type="text" id="noteTitleInput" class="note-title-input" placeholder="Título de tu obra..." maxlength="50">
+                        <textarea id="noteContentInput" class="note-content-input" placeholder="Había una vez..."></textarea>
+                        <div class="editor-actions">
+                            <span class="word-count" id="wordCount">0 palabras</span>
+                            <button class="btn-primary" id="saveNoteBtn"><i class="ph ph-floppy-disk"></i> Guardar Obra</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. MI BIBLIOTECA -->
+            <section class="screen" id="screen-library">
+                <div class="screen-header">
+                    <h2>Mi Biblioteca Personal</h2>
+                </div>
+                <div id="savedGrid" class="books-grid"></div>
+                <div id="emptyLibrary" class="empty-state hidden">
+                    <i class="ph ph-bookmarks"></i>
+                    <h3>Tu biblioteca está vacía</h3>
+                    <button class="btn-primary" data-screen="catalog">Ir al Catálogo</button>
+                </div>
+            </section>
+
+            <!-- 5. DASHBOARD ADMIN -->
+            <section class="screen" id="screen-admin">
+                <div class="admin-layout">
+                    <div class="admin-left">
+                        <div class="admin-stats-grid">
+                            <div class="stat-card glass-panel">
+                                <i class="ph ph-books stat-icon blue"></i>
+                                <div><h3 id="statTotalBooks">50</h3><p>Libros</p></div>
+                            </div>
+                            <div class="stat-card glass-panel">
+                                <i class="ph ph-activity stat-icon green"></i>
+                                <div><h3 id="statEvents">0</h3><p>Eventos</p></div>
+                            </div>
+                            <div class="stat-card glass-panel">
+                                <i class="ph ph-chat-teardrop-text stat-icon purple"></i>
+                                <div><h3 id="statSuggestions">0</h3><p>Sugerencias</p></div>
+                            </div>
+                        </div>
+                        <div class="admin-card glass-panel mt-20">
+                            <h3><i class="ph ph-image"></i> Identidad Visual</h3>
+                            <label for="logoUpload" class="btn-ghost btn-block" style="cursor:pointer; margin-top:10px;"><i class="ph ph-upload"></i> Subir Logo</label>
+                            <input type="file" id="logoUpload" accept="image/*" hidden>
+                        </div>
+                    </div>
+                    <div class="admin-right glass-panel">
+                        <div class="tabs">
+                            <button class="tab-btn active" data-tab="logs"><i class="ph ph-list-dashes"></i> Bitácora</button>
+                            <button class="tab-btn" data-tab="suggestions"><i class="ph ph-chat-centered-text"></i> Buzón</button>
+                        </div>
+                        <div class="log-container" id="adminLogs"></div>
+                        <div class="log-container hidden" id="adminSuggestions"></div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- CHATBOT -->
+        <button class="fab-chatbot pulse-btn" id="chatbotToggle"><i class="ph ph-robot"></i></button>
+        <div class="chatbot-window glass-panel hidden" id="chatbotWindow">
+            <div class="chat-header">
+                <div class="chat-bot-info">
+                    <i class="ph-fill ph-robot"></i>
+                    <div><h4>BookBot</h4><p>En línea</p></div>
+                </div>
+                <button class="icon-btn" id="closeChatbot"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg bot">¡Hola! Soy BookBot. ¿Qué te gustaría leer hoy? (Prueba: ciencia, novela, poesía)</div>
+            </div>
+            <form class="chat-input-area" id="chatForm">
+                <input type="text" id="chatInput" placeholder="Escribe un mensaje..." autocomplete="off">
+                <button type="submit"><i class="ph ph-paper-plane-right"></i></button>
+            </form>
+        </div>
+
+        <!-- MODAL DETALLE -->
+        <div id="detailModal" class="modal-overlay hidden">
+            <div class="modal-content glass-panel scale-in">
+                <button class="icon-btn close-btn" id="closeDetail"><i class="ph ph-x"></i></button>
+                <div class="detail-grid">
+                    <div class="detail-cover-container">
+                        <img id="detailCover" src="" class="detail-cover" alt="Portada" onerror="this.src='https://via.placeholder.com/300x450?text=Portada'">
+                    </div>
+                    <div class="detail-info">
+                        <div class="detail-meta-top">
+                            <span class="tag" id="detailCategory">Categoría</span>
+                            <div class="rating">
+                                <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star-half"></i>
+                                <span>4.5</span>
+                            </div>
+                        </div>
+                        <h1 id="detailTitle">Título</h1>
+                        <p id="detailAuthor" class="author"><i class="ph ph-pencil-simple"></i> Autor</p>
+
+                        <div class="book-stats">
+                            <div class="stat-item"><i class="ph ph-calendar"></i> <span id="detailYear">2020</span></div>
+                            <div class="stat-item"><i class="ph ph-file-text"></i> <span id="detailPages">320</span> págs</div>
+                            <div class="stat-item"><i class="ph ph-translate"></i> Español</div>
+                        </div>
+
+                        <p id="detailSynopsis" class="synopsis">Sinopsis...</p>
+
+                        <div class="detail-actions">
+                            <button id="detailReadBtn" class="btn-primary"><i class="ph ph-book-open"></i> Leer Ahora</button>
+                            <a id="detailDownloadBtn" class="btn-ghost" target="_blank"><i class="ph ph-download-simple"></i> Descargar</a>
+                            <button id="detailSaveBtn" class="btn-ghost btn-icon-only"><i class="ph ph-bookmark"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL LECTOR -->
+        <div id="readerModal" class="reader-modal hidden">
+            <div class="reader-header glass-panel">
+                <div class="reader-title-area">
+                    <h3 id="readerTitle">Cargando...</h3>
+                    <p id="readerSubtitle">Vista previa • Archive.org</p>
+                </div>
+                <button class="icon-btn" id="closeReader"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="reader-loading" id="readerLoading">
+                <i class="ph ph-spinner-gap ph-spin"></i>
+                <p>Cargando libro...</p>
+            </div>
+            <iframe id="readerIframe" src="about:blank" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <!-- MODAL SUGERENCIAS -->
+        <div id="suggestionModal" class="modal-overlay hidden">
+            <div class="modal-content glass-panel scale-in" style="max-width: 550px;">
+                <button class="icon-btn close-btn" id="closeSuggestion"><i class="ph ph-x"></i></button>
+                <h2 style="margin-bottom: 8px;">Buzón de Sugerencias</h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem;">¿Qué libro deberíamos comprar o qué podemos mejorar?</p>
+
+                <form id="suggestionForm" novalidate>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <i class="ph ph-user"></i>
+                            <input type="text" id="sugName" placeholder="Tu nombre" required>
+                            <div class="error-msg">Mín. 3 letras</div>
+                        </div>
+                        <div class="input-group">
+                            <i class="ph ph-envelope"></i>
+                            <input type="email" id="sugEmail" placeholder="Tu correo" required>
+                            <div class="error-msg">Correo inválido</div>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 16px;">
+                        <i class="ph ph-list-dashes"></i>
+                        <select id="sugType">
+                            <option value="libro">Sugerir un libro</option>
+                            <option value="mejora">Sugerir mejora de app</option>
+                            <option value="error">Reportar un error</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="align-items: flex-start; padding-top: 16px;">
+                        <i class="ph ph-chat-text" style="top: 24px;"></i>
+                        <textarea id="sugMessage" placeholder="Escribe tu mensaje aquí (mínimo 10 caracteres)..." required maxlength="300"></textarea>
+                        <div class="error-msg" style="top: 24px;">Mín. 10 letras</div>
+                    </div>
+                    <div class="char-counter"><span id="charCount">0</span>/300</div>
+                    <button type="submit" class="btn-primary btn-block mt-20"><i class="ph ph-paper-plane-right"></i> Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL INFO EMPRESA -->
+        <div id="infoModal" class="modal-overlay hidden">
+            <div class="modal-content glass-panel scale-in" style="max-width: 600px;">
+                <button class="icon-btn close-btn" id="closeInfo"><i class="ph ph-x"></i></button>
+                <h2 style="color: var(--accent); margin-bottom: 16px;">Sobre Booktopia</h2>
+                <p style="line-height: 1.6; margin-bottom: 16px;">Fundada en 2026, Booktopia es la plataforma de lectura digital definitiva. Nuestro objetivo es democratizar el acceso al conocimiento mediante tecnología de punta y una experiencia de usuario inmersiva.</p>
+                <p style="line-height: 1.6;"><b>Contacto:</b> soporte@booktopia.app</p>
+            </div>
+        </div>
+
+        <button class="fab-suggest" id="fabSuggest" title="Sugerir un libro"><i class="ph ph-chat-teardrop-text"></i></button>
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
